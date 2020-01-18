@@ -1,0 +1,17 @@
+{
+  "name": "flaap-calendar",
+  "version": "1.0.0",
+  "description": "This is a calendar prototype",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "calendar",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "Phillip-Juan van der Berg",
+  "license": "ISC"
+}
