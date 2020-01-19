@@ -91,11 +91,11 @@ class FlaapCalendar extends HTMLElement {
     
         for (let weekDayCount = 0; weekDayCount < 7; weekDayCount++) {
           let cell = document.createElement('td');
-          cell.className = 'day-cell';
 
           if (rowCount === 0 && weekDayCount < firstDay) {
             this.insertCell(row, cell, '');
           } else if (date <= this.daysInMonth()) {
+            cell.className = 'day-cell';
             if (
                 date === new Date().getDate() &&
                 this.selectedMonth == new Date().getMonth() &&

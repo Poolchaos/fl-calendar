@@ -91,10 +91,6 @@ const globals = {
       height: 50px;
     }
 
-    .cal-table td {
-      cursor: pointer;
-    }
-
     td.current {
       background: #38a3e0;
       border-radius: 20px;
@@ -110,6 +106,7 @@ const globals = {
     .day-cell:hover {
       background: #61c6ff;
       border-radius: 20px;
+      cursor: pointer;
     }
   `,
   events: {
