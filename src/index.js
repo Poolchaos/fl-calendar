@@ -132,33 +132,47 @@ class FlaapCalendar extends HTMLElement {
   }
 
   openSelectMonth() {
-    let selectionBox = this.shadowDom.querySelector('.selection');
+    this.resetSelectionBox();
 
-    if (selectionBox) {
-      selectionBox.className += ' active';
-    }
-    let content = this.shadowDom.querySelector('#selection_content');
-    while (content.firstChild) content.removeChild(content.firstChild);
-
-    for(var i = 0; i < globals.months.length - 1; i++) {
+    for(let i = 0; i < globals.months.length - 1; i++) {
       let month = globals.months[i];
-      let div = document.createElement('div');
-      div.dataset.index = i;
-      div.className = 'month-selector';
-      let cellText = document.createTextNode(month);
-      div.appendChild(cellText);
-      content.appendChild(div);
-      
-      div.addEventListener('click', (event) => {
+      this.createListSelector('month-selector', month, i, (event) => {
         let monthIndex = event.path[0].dataset.index;
         console.log(' ::>> button clicked >>>>> ', monthIndex);
         this.selectMonth(monthIndex);
       });
+      
     }
+  }
+
+  resetSelectionBox() {
+    let content = this.shadowDom.querySelector('#selection_content');
+    while (content.firstChild) content.removeChild(content.firstChild);
+
+    let selectionBox = this.shadowDom.querySelector('.selection');
+    if (selectionBox) {
+      selectionBox.className += ' active';
+    }
+  }
+
+  createListSelector(className, value, dataIndex, callback) {
+    let content = this.shadowDom.querySelector('#selection_content');
+    let div = document.createElement('div');
+    div.dataset.index = dataIndex;
+    div.className = className;
+    let cellText = document.createTextNode(value);
+    div.appendChild(cellText);
+    content.appendChild(div);
+    
+    div.addEventListener('click', (event) => callback(event));
   }
 
   openSelectYear() {
     console.log(' ::>> select year selected >>> ');
+
+    for(let i = this.selectedYear - 50; i < this.selectedYear + 50; i++) {
+
+    }
   }
 
   setSelected(cell) {
