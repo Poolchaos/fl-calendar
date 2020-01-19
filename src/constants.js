@@ -34,18 +34,24 @@ const globals = {
       height: 100%;
       background: rgba(0, 0, 0, 0.3);
       top: -100%;
+      left: 0;
       overflow-y: auto;
     }
 
     .close {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 5px 15px;
+      top: 0;
+      right: 0;
+      padding: 15px 20px;
       background: #a3605b;
-      border-radius: 5px;
+      border-radius: 0 0 0 5px;
       cursor: pointer;
       z-index: 10;
+    }
+
+    .close:hover {
+      background: #7a4845;
+      color: #fff;
     }
 
     .selection.active {
@@ -93,19 +99,16 @@ const globals = {
 
     td.current {
       background: #38a3e0;
-      border-radius: 20px;
       color: #fff;
     }
 
     td.selected {
       background: #64a1c4;
-      border-radius: 20px;
       color: #fff;
     }
 
     .day-cell:hover {
       background: #61c6ff;
-      border-radius: 20px;
       cursor: pointer;
     }
   `,
