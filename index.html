@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calendar</title>
   
-  <link rel="stylesheet" href="src/index.css">
+  <link rel="stylesheet" href="src/styles/index.css">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 
@@ -15,29 +15,9 @@
 
   <flaap-calendar>The content will be rendered here</flaap-calendar>
 
-  <template id="flaap-calendar">
-    
-    <div class="calendar-wrap">
-      <div class="selection"></div>
-      <table class="header">
-        <tbody>
-          <td>Su</td>
-          <td>Mo</td>
-          <td>Tu</td>
-          <td>We</td>
-          <td>Th</td>
-          <td>Fr</td>
-          <td>Sa</td>
-        </tbody>
-      </table>
-      <table class="cal-table">
-        <tbody></tbody>
-      </table>
-    </div>
-
-  </template>
-
-  <script src="src/constants.js"></script>
+  <script src="src/scripts/constants.js"></script>
+  <script src="src/scripts/element-service.js"></script>
+  <script src="src/scripts/flaap-calendar.js"></script>
   <script src="src/index.js"></script>
 </body>
 
