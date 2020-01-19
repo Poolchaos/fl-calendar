@@ -193,13 +193,6 @@ class FlaapCalendar extends HTMLElement {
         this.selectYear(yearIndex);
       });
     }
-    setTimeout(() => {
-      let selectionBox = this.shadowDom.querySelector('#selection-content');
-      console.log(' ::>> selectionBox >>>> ', selectionBox.scrollTop);
-      // selectionBox.scrollTop = 400;
-      selectionBox.scrollIntoView({ block: "center", inline: "center"});
-      console.log(' ::>> selectionBox >>>> ', selectionBox.scrollTop);
-    }, 1000);
   }
 
   selectYear(year) {
