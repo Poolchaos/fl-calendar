@@ -1,117 +1,143 @@
 
-
-function daysInMonth(month, year) {
-  return new Date(year, month, 0).getDate();
-}
-
-
-const get = {
-  months: [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ],
-  date: function() {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
-    console.log(' ::>> date = ', date);
-    console.log(' ::>> date = ', year);
-    console.log(' ::>> date = ', month);
-    console.log(' ::>> date = ', day);
-  }
-};
-
-let myCustomElementTemplate = document.querySelector('#flaap-calendar');
-console.log(' ::>> myCustomElementTemplate >>>> ', myCustomElementTemplate);
-
 class FlaapCalendar extends HTMLElement {
-
-  shadow;
 
   constructor() {
     super();
-    console.log(' ::>> calendar initialised ');
     this.initContent();
 
     let year = (new Date()).getFullYear();
     let month = (new Date()).getMonth();
-    this.initCurrentMonth(year, month);
+    this.initInitialState(year, month);
   }
 
   initContent() {
-    
-    this.shadow = this.attachShadow({mode: 'open'});
-    var style = document.createElement('style');
+    try {
+      this.shadowDom = this.attachShadow({mode: 'open'});
+      var style = document.createElement('style');
+      style.textContent = globals.styles;
 
-    style.textContent = `
-      .calendar-wrap {
-        background: #83d0fc;
-        display: inline-block;
-      }
-
-      td {
-        text-align: center;
-        width: 50px;
-        height: 50px;
-        cursor: pointer;
-      }
-
-      td.current {
-        background: #38a3e0;
-        border-radius: 20px;
-        color: #fff;
-      }
-    `;
-
-    this.shadow.appendChild(style);
-    this.shadow.appendChild(myCustomElementTemplate.content.cloneNode(true));
+      this.shadowDom.appendChild(style);
+      let calendarTemplate = document.querySelector('#flaap-calendar');
+      this.shadowDom.appendChild(calendarTemplate.content.cloneNode(true));
+    } catch (error) {
+      console.error('initContent | an error ocurred ', error);
+    }
   }
 
-  initCurrentMonth(year, month) {
-    this.tbl = this.shadow.querySelector('.cal-table tbody');
-    this.tbl.innerHtml = '';
+  initInitialState(year, month) {
+    try {
+      this.tbl = this.shadowDom.querySelector('.cal-table tbody');
+      this.tbl.innerHtml = '';
 
-    this.generateRows(year, month);
+      this.generateHeader(globals.months[month], () => this.openSelectMonth());
+      this.generateHeader(year, () => this.openSelectYear());
+      this.generateRows(year, month);
+    } catch (error) {
+      console.error('initInitialState | an error ocurred ', error);
+    }
+  }
+
+  generateHeader(value, callback) {
+    try {
+      let wrapper = this.shadowDom.querySelector('.calendar-wrap');
+      let div = document.createElement('div');
+      div.addEventListener('click', () => callback(value));
+      div.className = 'header';
+      let headerText = document.createTextNode(value);
+      div.appendChild(headerText);
+      wrapper.prepend(div);
+    } catch (error) {
+      console.error('generateHeader | an error ocurred ', error);
+    }
   }
 
   generateRows(year, month) {
-    let firstDay = (new Date(year, month)).getDay();
-    let date = 1;
+    try {
+      let firstDay = (new Date(year, month)).getDay();
+      let date = 1;
 
-    for (let rowCount = 0; rowCount < 6; rowCount++) {
-      let row = document.createElement('tr');
-  
-      for (let weekDayCount = 0; weekDayCount < 7; weekDayCount++) {
-        let cell = document.createElement('td');
+      for (let rowCount = 0; rowCount < 6; rowCount++) {
+        let row = document.createElement('tr');
+    
+        for (let weekDayCount = 0; weekDayCount < 7; weekDayCount++) {
+          let cell = document.createElement('td');
 
-        if (rowCount === 0 && weekDayCount < firstDay) {
-          this.insertCell(row, cell, '');
-        } else if (date <= daysInMonth(month, year)) {
-          if (date === new Date().getDate()) {
-            cell.className += ' current'
+          if (rowCount === 0 && weekDayCount < firstDay) {
+            this.insertCell(row, cell, '');
+          } else if (date <= this.daysInMonth(month, year)) {
+            if (date === new Date().getDate()) {
+              cell.className += ' current'
+            }
+            this.insertCell(row, cell, date);
+            date++;
           }
-          this.insertCell(row, cell, date);
-          date++;
         }
+        this.tbl.appendChild(row);
       }
-      this.tbl.appendChild(row);
+    } catch (error) {
+      console.error('generateRows | an error ocurred ', error);
     }
   }
 
   insertCell(row, cell, date) {
-    let cellText = document.createTextNode(date);
-    cell.appendChild(cellText);
-    cell.addEventListener();
-    row.appendChild(cell);
+    try {
+      let cellText = document.createTextNode(date);
+      cell.appendChild(cellText);
+      if (date) {
+        cell.addEventListener('click', () =>  {
+          this.setSelected(cell);
+          this.selectDay(date);
+        });
+      }
+      row.appendChild(cell);
+    } catch (error) {
+      console.error('insertCell | an error ocurred ', error);
+    }
+  }
+
+  selectDay(day) {
+    console.log(' ::>> day selected >>> ', day);
+  }
+
+  selectMonth(month) {
+    console.log(' ::>> month selected >>> ', month);
+  }
+
+  selectYear(year) {
+    console.log(' ::>> year selected >>> ', year);
+  }
+
+  openSelectMonth() {
+    let selectionBox = this.shadowDom.querySelector('.selection');
+    console.log(' ::>> select month selected >>> ', selectionBox);
+    if (selectionBox) {
+      selectionBox.className += ' active';
+    }
+  }
+
+  openSelectYear() {
+    console.log(' ::>> select year selected >>> ');
+  }
+
+  setSelected(cell) {
+    let selectedElement = this.tbl.querySelector('.selected');
+    if (selectedElement) {
+      selectedElement.className = selectedElement.className.replace(' selected', '');
+    }
+    cell.className += ' selected';
+  }
+  
+  daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
   }
 }
 
-customElements.whenDefined('flaap-calendar').then(_ => {
-  console.log('flaap-calendar is defined');
-});
+if (window.customElements) {
+  customElements.define('flaap-calendar', FlaapCalendar);
+} else {
+  document.registerElement('flaap-calendar', FlaapCalendar);
+}
 
-customElements.define('flaap-calendar', FlaapCalendar);
 
 function init() {
 
@@ -124,5 +150,7 @@ function init() {
   // display dayly
   // 
   init();
-  get.date();
+  // get.date();
 })();
+
+
