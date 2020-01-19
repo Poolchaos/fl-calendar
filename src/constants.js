@@ -3,18 +3,29 @@ const globals = {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ],
+  days: [
+    'Sun', 'Mo', 'Tu', 'We',
+    'Th', 'Fr', 'Sa'
+  ],
   styles: `
     .calendar-wrap {
+      font-family: Arial;
       position: relative;
       background: #83d0fc;
       display: inline-block;
       overflow: hidden;
+      padding: 10px;
     }
 
     div.header {
+      background: #61c6ff;
       text-align: center;
       padding: 15px 0;
       cursor: pointer;
+    }
+
+    div.header:hover {
+      background: #4dbfff;
     }
 
     .selection {
@@ -78,6 +89,9 @@ const globals = {
       text-align: center;
       width: 50px;
       height: 50px;
+    }
+
+    .cal-table td {
       cursor: pointer;
     }
 
@@ -91,6 +105,11 @@ const globals = {
       background: #64a1c4;
       border-radius: 20px;
       color: #fff;
+    }
+
+    .day-cell:hover {
+      background: #61c6ff;
+      border-radius: 20px;
     }
   `,
   events: {
