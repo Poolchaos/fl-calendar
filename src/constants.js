@@ -23,6 +23,18 @@ const globals = {
       height: 100%;
       background: rgba(0, 0, 0, 0.3);
       top: -100%;
+      overflow-y: auto;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 15px;
+      background: #a3605b;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10;
     }
 
     .selection.active {
@@ -49,6 +61,17 @@ const globals = {
         -webkit-transform: translateY(100%);
                 transform: translateY(100%);
       }
+    }
+
+    .month-selector {
+      background: #61c5ff;
+      text-align: center;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .month-selector:hover {
+      background: #45bbff;
     }
 
     td {

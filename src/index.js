@@ -1,10 +1,12 @@
 
 class FlaapCalendar extends HTMLElement {
 
+  selectedYear;
+  selectedMonth;
+
   constructor() {
     super();
     this.initContent();
-
     let year = (new Date()).getFullYear();
     let month = (new Date()).getMonth();
     this.initInitialState(year, month);
@@ -25,13 +27,17 @@ class FlaapCalendar extends HTMLElement {
   }
 
   initInitialState(year, month) {
-    try {
-      this.tbl = this.shadowDom.querySelector('.cal-table tbody');
-      this.tbl.innerHtml = '';
+    console.log(' ::>> initInitialState >>>>> ', year, month);
+    this.selectedYear = year;
+    this.selectedMonth = month;
 
-      this.generateHeader(globals.months[month], () => this.openSelectMonth());
-      this.generateHeader(year, () => this.openSelectYear());
-      this.generateRows(year, month);
+    try {
+      let table = this.shadowDom.querySelector('.cal-table tbody');
+      while (table.firstChild) table.removeChild(table.firstChild);
+
+      this.generateHeader(globals.months[this.selectedMonth], () => this.openSelectMonth());
+      this.generateHeader(this.selectedYear, () => this.openSelectYear());
+      this.generateRows();
     } catch (error) {
       console.error('initInitialState | an error ocurred ', error);
     }
@@ -51,9 +57,9 @@ class FlaapCalendar extends HTMLElement {
     }
   }
 
-  generateRows(year, month) {
+  generateRows() {
     try {
-      let firstDay = (new Date(year, month)).getDay();
+      let firstDay = (new Date(this.selectedYear, this.selectedMonth)).getDay();
       let date = 1;
 
       for (let rowCount = 0; rowCount < 6; rowCount++) {
@@ -64,15 +70,19 @@ class FlaapCalendar extends HTMLElement {
 
           if (rowCount === 0 && weekDayCount < firstDay) {
             this.insertCell(row, cell, '');
-          } else if (date <= this.daysInMonth(month, year)) {
-            if (date === new Date().getDate()) {
+          } else if (date <= this.daysInMonth()) {
+            if (
+                date === new Date().getDate() &&
+                this.selectedMonth == new Date().getMonth()
+              ) {
               cell.className += ' current'
             }
             this.insertCell(row, cell, date);
             date++;
           }
         }
-        this.tbl.appendChild(row);
+        let table = this.shadowDom.querySelector('.cal-table tbody');
+        table.appendChild(row);
       }
     } catch (error) {
       console.error('generateRows | an error ocurred ', error);
@@ -100,7 +110,21 @@ class FlaapCalendar extends HTMLElement {
   }
 
   selectMonth(month) {
-    console.log(' ::>> month selected >>> ', month);
+    this.resetState();
+
+    this.initInitialState(this.selectedYear, month);
+    let selectionBox = this.shadowDom.querySelector('.selection');
+    selectionBox.className = selectionBox.className.replace(' active', '');
+    
+  }
+
+  resetState() {
+    let headers = this.shadowDom.querySelectorAll('div.header');
+    if(headers && headers.length > 0) {
+      headers.forEach(header => {
+        header.parentElement.removeChild(header);
+      });
+    }
   }
 
   selectYear(year) {
@@ -109,9 +133,27 @@ class FlaapCalendar extends HTMLElement {
 
   openSelectMonth() {
     let selectionBox = this.shadowDom.querySelector('.selection');
-    console.log(' ::>> select month selected >>> ', selectionBox);
+
     if (selectionBox) {
       selectionBox.className += ' active';
+    }
+    let content = this.shadowDom.querySelector('#selection_content');
+    while (content.firstChild) content.removeChild(content.firstChild);
+
+    for(var i = 0; i < globals.months.length - 1; i++) {
+      let month = globals.months[i];
+      let div = document.createElement('div');
+      div.dataset.index = i;
+      div.className = 'month-selector';
+      let cellText = document.createTextNode(month);
+      div.appendChild(cellText);
+      content.appendChild(div);
+      
+      div.addEventListener('click', (event) => {
+        let monthIndex = event.path[0].dataset.index;
+        console.log(' ::>> button clicked >>>>> ', monthIndex);
+        this.selectMonth(monthIndex);
+      });
     }
   }
 
@@ -120,15 +162,15 @@ class FlaapCalendar extends HTMLElement {
   }
 
   setSelected(cell) {
-    let selectedElement = this.tbl.querySelector('.selected');
+    let selectedElement = this.shadowDom.querySelector('.cal-table tbody .selected');
     if (selectedElement) {
       selectedElement.className = selectedElement.className.replace(' selected', '');
     }
     cell.className += ' selected';
   }
   
-  daysInMonth(month, year) {
-    return new Date(year, month, 0).getDate();
+  daysInMonth() {
+    return new Date(this.selectedYear, this.selectedMonth, 0).getDate();
   }
 }
 
